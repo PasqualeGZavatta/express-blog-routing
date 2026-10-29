@@ -12,7 +12,6 @@ router.get("/:id", (req, res) => {
 });
 
 //create
-
 router.post("/", (req, res) => {
   res.send("Creazione posts");
 });
