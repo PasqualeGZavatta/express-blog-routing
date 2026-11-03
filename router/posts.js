@@ -13,8 +13,19 @@ router.get("/", (req, res, next) => {
 });
 
 //lettura singola
-router.get("/:id", (req, res) => {
-  res.send("Lettura post n: " + req.params.id);
+router.get("/:id", (req, res, next) => {
+  const sql = "SELECT * FROM posts WHERE id = ?";
+  const id = req.params.id;
+
+  connection.query(sql, [id], (err, results, next) => {
+    if (err) return next(err);
+    if (results.length === 0) {
+      return res.status(404).json({
+        error: "post not found",
+      });
+    }
+    res.json(results[0]);
+  });
 });
 
 //create
@@ -37,7 +48,7 @@ router.delete("/:id", (req, res) => {
 
   connection.query(sql, [id], (err, results, next) => {
     if (results.affectedRows === 0) {
-      res.status(404).json({
+      return res.status(404).json({
         error: "post not found",
       });
     }
